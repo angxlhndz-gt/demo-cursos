@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ArrowDown,
   ArrowUpRight,
@@ -82,6 +82,29 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
+  useEffect(() => {
+    const revealElements = document.querySelectorAll<HTMLElement>('[data-reveal]');
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      revealElements.forEach((element) => element.classList.add('is-visible'));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12 },
+    );
+
+    revealElements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <main className="site-shell">
       <header className="site-header">
@@ -148,7 +171,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="intro-section section-grid" id="taller">
+      <section className="intro-section section-grid" id="taller" data-reveal>
         <div>
           <p className="eyebrow"><span /> El taller</p>
           <h2>De una idea a tu <em>propia línea.</em></h2>
@@ -166,14 +189,14 @@ export default function Home() {
         <div><strong>Kit + diploma</strong><span>incluidos en presencial</span></div>
       </section>
 
-      <section className="modalities-section section-padding" id="modalidades">
+      <section className="modalities-section section-padding" id="modalidades" data-reveal>
         <div className="section-heading split-heading">
           <div><p className="eyebrow"><span /> Elige cómo vivirlo</p><h2>Dos formas de empezar.</h2></div>
           <p>La misma intención, dos maneras de hacer espacio para tu proyecto.</p>
         </div>
 
         <div className="modality-grid">
-          <article className="modality-card card-in-person">
+          <article className="modality-card card-in-person" data-reveal>
             <div className="card-topline"><span>01</span><span className="card-label">Presencial</span></div>
             <div className="modality-title-row"><h3>Presencial</h3><span className="featured-badge">Experiencia completa</span></div>
             <p className="modality-description">Una jornada para aprender, crear y llevarte tus materiales contigo.</p>
@@ -183,7 +206,7 @@ export default function Home() {
             <WhatsAppLink message={WHATSAPP_MESSAGES.inPerson} className="card-button card-button-light">Quiero modalidad presencial <ArrowUpRight size={17} /></WhatsAppLink>
           </article>
 
-          <article className="modality-card card-online">
+          <article className="modality-card card-online" data-reveal>
             <div className="card-topline"><span>02</span><span className="card-label">Online</span></div>
             <div className="modality-title-row"><h3>Online</h3><span className="featured-badge badge-dark">A tu ritmo</span></div>
             <p className="modality-description">Lleva el taller contigo, estés donde estés, y avanza desde tu espacio.</p>
@@ -194,7 +217,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="included-section section-padding">
+      <section className="included-section section-padding" data-reveal>
         <div className="included-intro">
           <p className="eyebrow eyebrow-light"><span /> Lo que recibes</p>
           <h2>Todo lo necesario para dar el primer paso.</h2>
@@ -208,38 +231,38 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="process-section section-padding" id="inscripcion">
+      <section className="process-section section-padding" id="inscripcion" data-reveal>
         <div className="section-heading split-heading">
           <div><p className="eyebrow"><span /> Inscripción</p><h2>Empieza en cuatro pasos.</h2></div>
           <p>Cuando tengas clara tu modalidad, escríbenos para completar tu registro.</p>
         </div>
-        <div className="steps-grid">{steps.map((step) => <div className="step-card" key={step.number}><span className="step-number">{step.number}</span><h3>{step.title}</h3><p>{step.text}</p></div>)}</div>
+        <div className="steps-grid">{steps.map((step) => <div className="step-card" data-reveal key={step.number}><span className="step-number">{step.number}</span><h3>{step.title}</h3><p>{step.text}</p></div>)}</div>
         <div className="requirements-box">
           <div className="requirements-heading"><UserRound size={21} /><div><span>Datos solicitados</span><h3>Tenlos listos para tu inscripción</h3></div></div>
           <div className="requirements-list">{WORKSHOP.requirements.map((requirement) => <span key={requirement}><Check size={15} /> {requirement}</span>)}</div>
         </div>
       </section>
 
-      <section className="gallery-section section-padding">
+      <section className="gallery-section section-padding" data-reveal>
         <div className="section-heading split-heading">
           <div><p className="eyebrow"><span /> Espacio para tu historia</p><h2>Aquí podrían vivir tus resultados.</h2></div>
           <p>Este bloque está listo para recibir trabajos, alumnas y resultados reales cuando estén disponibles.</p>
         </div>
         <div className="placeholder-gallery">
-          <div className="gallery-card gallery-tall"><div><ImageOff size={24} /><span>Fotografía oficial</span><strong>Proceso</strong></div><small>Placeholder demostrativo</small></div>
-          <div className="gallery-card gallery-wide"><div><ImageOff size={24} /><span>Fotografía oficial</span><strong>Producto</strong></div><small>Placeholder demostrativo</small></div>
-          <div className="gallery-card gallery-small"><div><ImageOff size={24} /><span>Fotografía oficial</span><strong>Alumnas</strong></div><small>Placeholder demostrativo</small></div>
+          <div className="gallery-card gallery-tall" data-reveal><div><ImageOff size={24} /><span>Fotografía oficial</span><strong>Proceso</strong></div><small>Placeholder demostrativo</small></div>
+          <div className="gallery-card gallery-wide" data-reveal><div><ImageOff size={24} /><span>Fotografía oficial</span><strong>Producto</strong></div><small>Placeholder demostrativo</small></div>
+          <div className="gallery-card gallery-small" data-reveal><div><ImageOff size={24} /><span>Fotografía oficial</span><strong>Alumnas</strong></div><small>Placeholder demostrativo</small></div>
         </div>
       </section>
 
-      <section className="faq-section section-padding">
+      <section className="faq-section section-padding" data-reveal>
         <div className="faq-layout">
           <div className="faq-intro"><p className="eyebrow"><span /> Preguntas frecuentes</p><h2>Lo esencial, <em>claro.</em></h2><p>Si todavía tienes dudas sobre las modalidades o el proceso, aquí encontrarás la información confirmada.</p><WhatsAppLink message={WHATSAPP_MESSAGES.inPerson} className="text-link">Consultar por WhatsApp <ArrowUpRight size={16} /></WhatsAppLink></div>
           <div className="faq-list">{faqItems.map((item, index) => { const isOpen = openFaq === index; return <div className={`faq-item ${isOpen ? 'is-open' : ''}`} key={item.question}><button type="button" onClick={() => setOpenFaq(isOpen ? null : index)} aria-expanded={isOpen}><span>{item.question}</span><ChevronDown size={19} /></button><div className="faq-answer" aria-hidden={!isOpen}><p>{item.answer}</p></div></div>; })}</div>
         </div>
       </section>
 
-      <section className="final-cta section-padding">
+      <section className="final-cta section-padding" data-reveal>
         <div className="final-cta-orbit" />
         <div className="final-cta-content">
           <p className="eyebrow eyebrow-light"><span /> El siguiente paso</p>
